@@ -27,7 +27,9 @@ export default class Poll {
     </div>
     <div class="${this.rootClass}__body"></div>`;
     // Вопрос
-    this.root.querySelector(`.${this.rootClass}__header .${this.rootClass}__input`).value = this.data.question;
+    if (this.data) {
+      this.root.querySelector(`.${this.rootClass}__header .${this.rootClass}__input`).value = this.data.question || '';
+    }
 
     // Несколько ответов
     let multipleAnswersCheckbox = this.root.querySelector(`.${this.rootClass}__header .${this.rootClass}__checkbox:first-child input`);
@@ -38,13 +40,17 @@ export default class Poll {
       });
       this.data.multiple = e.target.checked;
     })
-    // Вставка из data
-    multipleAnswersCheckbox.checked = this.data.multiple;
+    if (this.data) {
+      // Вставка из data
+      multipleAnswersCheckbox.checked = this.data.multiple;
+    }
 
     // Викторина
     let quizCheckbox = this.root.querySelector(`.${this.rootClass}__header .${this.rootClass}__checkbox:last-child input`);
     // Вставка из data
-    quizCheckbox.checked = this.data.quiz
+    if (this.data.quiz) {
+      quizCheckbox.checked = this.data.quiz
+    }
 
     this.api.listeners.on(quizCheckbox, 'change', (e) => {
       this.data.quiz = e.target.checked;
@@ -59,11 +65,13 @@ export default class Poll {
 
     // Ответы
     // Вставка ответов из data
-    this.data.answers.forEach((answer) => {
-      this.root.querySelector(`.${this.rootClass}__body`).append(this.getAnswer(answer.value, answer.checked));
-    })
+    if (this.data && this.data.answers) {
+      this.data.answers.forEach((answer) => {
+        this.root.querySelector(`.${this.rootClass}__body`).append(this.getAnswer(answer.value, answer.checked));
+      })
+    }
     // Если нет ни одного ответа вставляем пустой
-    if (!this.data.answers.length || !this.data.answers.reduce((a, b) => a + !b.value.trim().length ? 1 : 0, 0).length) {
+    if (!(this.data && this.data.answers && this.data.answers.length && this.data.answers.reduce((a, b) => a + !b.value.trim().length ? 1 : 0, 0).length)) {
       this.root.querySelector(`.${this.rootClass}__body`).appendChild(this.getAnswer());
     }
 
@@ -80,8 +88,7 @@ export default class Poll {
   }
 
   save(blockContent){
-    console.log(blockContent.querySelector(`.${this.rootClass}__header .${this.rootClass}__checkbox:first-child input`).checked);
-    return {
+    let result = {
       question: blockContent.querySelector(`.${this.rootClass}__header .${this.rootClass}__input`).value,
       multiple: blockContent.querySelector(`.${this.rootClass}__header .${this.rootClass}__checkbox:first-child input`).checked || false,
       quiz: blockContent.querySelector(`.${this.rootClass}__header .${this.rootClass}__checkbox:last-child input`).checked || false,
@@ -90,6 +97,8 @@ export default class Poll {
         checked: node.querySelector(`.${this.rootClass}__checkbox input`).checked || false,
       }))
     }
+    console.log(result);
+    return result;
   }
 
   handleAnswerInput() {
