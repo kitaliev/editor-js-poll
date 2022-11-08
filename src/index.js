@@ -88,7 +88,7 @@ export default class Poll {
   }
 
   save(blockContent){
-    let result = {
+    return {
       question: blockContent.querySelector(`.${this.rootClass}__header .${this.rootClass}__input`).value,
       multiple: blockContent.querySelector(`.${this.rootClass}__header .${this.rootClass}__checkbox:first-child input`).checked || false,
       quiz: blockContent.querySelector(`.${this.rootClass}__header .${this.rootClass}__checkbox:last-child input`).checked || false,
@@ -96,8 +96,7 @@ export default class Poll {
         value: node.querySelector(`.${this.rootClass}__input`).value,
         checked: node.querySelector(`.${this.rootClass}__checkbox input`).checked || false,
       }))
-    }
-    return result;
+    };
   }
 
   handleAnswerInput() {
