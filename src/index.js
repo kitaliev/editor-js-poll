@@ -97,7 +97,6 @@ export default class Poll {
         checked: node.querySelector(`.${this.rootClass}__checkbox input`).checked || false,
       }))
     }
-    console.log(result);
     return result;
   }
 
