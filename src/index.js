@@ -67,7 +67,9 @@ export default class Poll {
     // Вставка ответов из data
     if (this.data && this.data.answers) {
       this.data.answers.forEach((answer) => {
-        this.root.querySelector(`.${this.rootClass}__body`).append(this.getAnswer(answer.value, answer.checked));
+        if (answer.value.trim().length) {
+          this.root.querySelector(`.${this.rootClass}__body`).append(this.getAnswer(answer.value, answer.checked));
+        }
       })
     }
     // Если нет ни одного ответа вставляем пустой
@@ -88,14 +90,16 @@ export default class Poll {
   }
 
   save(blockContent){
+    let answers = Array.from(blockContent.querySelectorAll(`.${this.rootClass}__body .${this.rootClass}__answer`)).map((node) => ({
+      value: node.querySelector(`.${this.rootClass}__input`).value,
+      checked: node.querySelector(`.${this.rootClass}__checkbox input`).checked || false,
+    }));
+    answers = answers.filter(a => !!a.value.trim().length);
     return {
       question: blockContent.querySelector(`.${this.rootClass}__header .${this.rootClass}__input`).value,
       multiple: blockContent.querySelector(`.${this.rootClass}__header .${this.rootClass}__checkbox:first-child input`).checked || false,
       quiz: blockContent.querySelector(`.${this.rootClass}__header .${this.rootClass}__checkbox:last-child input`).checked || false,
-      answers: Array.from(blockContent.querySelectorAll(`.${this.rootClass}__body .${this.rootClass}__answer`)).map((node) => ({
-        value: node.querySelector(`.${this.rootClass}__input`).value,
-        checked: node.querySelector(`.${this.rootClass}__checkbox input`).checked || false,
-      }))
+      answers: answers,
     };
   }
 
