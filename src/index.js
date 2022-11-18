@@ -3,9 +3,10 @@ import "./index.styl"
 export default class Poll {
   rootClass = 'editor-js-poll-plugin';
 
-  constructor({data, api}){
+  constructor({data, api, block }){
     this.data = data;
     this.api = api;
+    this.blockAPI = block;
   }
 
   render(){
@@ -55,6 +56,7 @@ export default class Poll {
     this.api.listeners.on(quizCheckbox, 'change', (e) => {
       this.data.quiz = e.target.checked;
       this.root.querySelectorAll(`.${this.rootClass}__body .${this.rootClass}__checkbox`).forEach((input) => {
+        input.setAttribute('type', multipleAnswersCheckbox.checked ? 'checkbox' : 'radio');
         if (!e.target.checked) {
           input.classList.add(`${this.rootClass}__hidden`)
         } else {
@@ -80,7 +82,9 @@ export default class Poll {
     // Слушатели полей ввода ответа
     this.root.querySelectorAll(`.${this.rootClass}__body .${this.rootClass}__answer`).forEach((input) => {
       // Чекбокс
-      this.api.listeners.on(input.querySelector(`.${this.rootClass}__checkbox input`), 'change', () => {}, false);
+      this.api.listeners.on(input.querySelector(`.${this.rootClass}__checkbox input`), 'change', () => {
+        this.blockAPI.dispatchChange()
+      }, false);
       // Input
       this.api.listeners.on(input.querySelector(`.${this.rootClass}__input`), 'input', () => {
         this.handleAnswerInput()
@@ -124,7 +128,7 @@ export default class Poll {
   getAnswer(value, checked) {
     let root = document.createElement('div');
     root.classList.add(`${this.rootClass}__answer`);
-    root.innerHTML = `<label class="${this.rootClass}__checkbox ${!this.data.quiz ? `${this.rootClass}__hidden` : ''}" title="Правильный ответ"><input type="${this.data.multiple ? 'checkbox' : 'radio'}"></label>
+    root.innerHTML = `<label class="${this.rootClass}__checkbox ${!this.data.quiz ? `${this.rootClass}__hidden` : ''}" title="Правильный ответ"><input name="${this.blockAPI?.id || ''}" type="${this.data.multiple ? 'checkbox' : 'radio'}"></label>
       <input type="text" class="${this.rootClass}__input cdx-input" placeholder="Вариант ответа" />`;
     root.querySelector(`.${this.rootClass}__checkbox input`).checked = checked || false;
     root.querySelector(`.${this.rootClass}__input`).value = value || '';
