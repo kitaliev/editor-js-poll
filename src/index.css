@@ -1,0 +1,38 @@
+.editor-js-poll-plugin {
+  display: grid;
+  grid-gap: 16px;
+  background: #ffffff;
+  border-radius: 5px;
+}
+.editor-js-poll-plugin__header {
+  display: grid;
+  grid-gap: 8px;
+}
+
+.editor-js-poll-plugin__header-checks {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.editor-js-poll-plugin__checkbox {
+  display: flex;
+  align-items: center;
+  font-size: 0.875em;
+  gap: 2px;
+}
+
+.editor-js-poll-plugin__body {
+  display: grid;
+  grid-gap: 10px;
+}
+
+.editor-js-poll-plugin__answer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.editor-js-poll-plugin__hidden {
+  display: none;
+}

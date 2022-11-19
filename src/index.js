@@ -1,6 +1,6 @@
-import "./index.styl"
+require("./index.css").toString()
 
-export default class Poll {
+class Poll {
   rootClass = 'editor-js-poll-plugin';
 
   constructor({data, api, block }){
@@ -142,3 +142,5 @@ export default class Poll {
     };
   }
 }
+
+module.exports = Poll;
